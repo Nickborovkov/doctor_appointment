@@ -26,6 +26,7 @@
                         type="date"
                         v-model="appointmentDate"
                         :min="dateToday"
+                        :max="dateAfterTwoWeeks"
                         class="mb-3"
           ></b-form-input>
 
@@ -39,7 +40,7 @@
 
 <script>
 
-import {getTodayDate} from "../utils/dateHelper/dateHelper";
+  import {getDateAfterTwoWeeks, getTodayDate} from "../utils/dateHelper/dateHelper";
 
 export default {
   name: 'App',
@@ -54,6 +55,9 @@ export default {
   computed: {
     dateToday () {
       return getTodayDate()
+    },
+    dateAfterTwoWeeks () {
+      return getDateAfterTwoWeeks()
     }
   },
   methods: {
