@@ -7,40 +7,74 @@
           <h3 style="text-align: center">Вызов врача на дом</h3>
           <hr class="mb-5">
 
-          <p>Введите имя:</p>
-          <b-form-input id="fullName"
-                        type="text"
-                        v-model="fullName"
-                        class="mb-3"
-          ></b-form-input>
+          <b-form>
 
-          <p>Введите адрес:</p>
-          <b-form-input id="address"
-                        type="text"
-                        v-model="address"
-                        class="mb-3"
-          ></b-form-input>
+            <p>Введите имя:</p>
+            <b-form-input id="fullName"
+                          type="text"
+                          v-model="$v.fullName.$model"
+                          class="mb-3"
+                          @blur="$v.fullName.$touch()"
+            ></b-form-input>
+              <p style="color: tomato" v-if="!$v.fullName.required && $v.fullName.$dirty">Поле обязательно</p>
+              <p style="color: tomato" v-if="!$v.fullName.fullNameRegex && $v.fullName.$dirty">Введите полное ФИО, цифры недопустимы</p>
 
-          <p>Выберите дату:</p>
-          <b-form-input id="appointmentDate"
-                        type="date"
-                        v-model="appointmentDate"
-                        :min="dateToday"
-                        :max="dateAfterTwoWeeks"
-                        class="mb-3"
-          ></b-form-input>
 
-          <b-button class="mt-3" @click="openModal" style="width: 100%" block variant="info">Записаться</b-button>
+            <p>Введите адрес:</p>
+            <b-form-input id="address"
+                          type="text"
+                          v-model="$v.address.$model"
+                          class="mb-3"
+                          @blur="$v.address.$touch()"
+            ></b-form-input>
+              <p style="color: tomato" v-if="!$v.address.required && $v.address.$dirty">Поле обязательно</p>
+
+
+            <p>Выберите дату:</p>
+            <b-form-input id="appointmentDate"
+                          type="date"
+                          v-model="$v.appointmentDate.$model"
+                          :min="dateToday"
+                          :max="dateAfterTwoWeeks"
+                          class="mb-3"
+                          @blur="$v.appointmentDate.$touch()"
+            ></b-form-input>
+              <p style="color: tomato" v-if="!$v.appointmentDate.required && $v.appointmentDate.$dirty">Поле обязательно</p>
+
+            <b-button class="mt-3"
+                      style="width: 100%" variant="info"
+                      :disabled="!$v.fullName.fullNameRegex ||
+                    !$v.fullName.required ||
+                    !$v.address.required ||
+                    !$v.appointmentDate.required"
+                      @click="$bvModal.show('responseModal')"
+            >
+              Записаться
+            </b-button>
+
+          </b-form>
 
         </b-card>
       </b-col>
     </b-row>
+
+    <ModalWindow :fullName="fullName"
+                 :address="address"
+                 :appointmentDate="appointmentDate"
+    ></ModalWindow>
+
   </b-container>
 </template>
 
 <script>
 
   import {getDateAfterTwoWeeks, getTodayDate} from "../utils/dateHelper/dateHelper";
+  import {required} from "vuelidate/lib/validators";
+  import { helpers } from 'vuelidate/lib/validators'
+  import ModalWindow from "./components/modalWindow/ModalWindow";
+
+  const fullNameRegex = helpers.regex('fullNameRegex',
+          /^(([а-яА-ЯёЁ\s]+|[a-zA-Z\s]+){2})+ (([а-яА-ЯёЁ\s]+|[a-zA-Z\s]+){2})+ (([а-яА-ЯёЁ\s]+|[a-zA-Z\s]+){2})+$/)
 
 export default {
   name: 'App',
@@ -50,6 +84,7 @@ export default {
       address: ``,
       appointmentDate: ``,
       modalWindow: false,
+      formTouched: false,
     }
   },
   computed: {
@@ -58,12 +93,22 @@ export default {
     },
     dateAfterTwoWeeks () {
       return getDateAfterTwoWeeks()
-    }
+    },
   },
-  methods: {
-    openModal () {
-      this.modalWindow = true
-    }
+  validations: {
+    fullName: {
+      required,
+      fullNameRegex,
+    },
+    address: {
+      required,
+    },
+    appointmentDate: {
+      required,
+    },
+  },
+  components: {
+    ModalWindow: ModalWindow,
   }
 }
 </script>
