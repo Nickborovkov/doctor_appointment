@@ -7,7 +7,7 @@
           <div style="display: flex; justify-content: center">
             <h3 style="text-align: center; margin-right: 10px">Вызов врача на дом</h3>
             <div style="width: 40px;">
-              <img style="width: 100%" src="../assets/icons/appLogo.png" alt="appLogo">
+              <img style="width: 100%" src="./assets/icons/appLogo.png" alt="appLogo">
             </div>
             <hr class="mb-5">
           </div>
@@ -132,13 +132,13 @@
 
 <script>
 
-  import {getDateAfterTwoWeeks, getTodayDate} from "../utils/dateHelper/dateHelper";
+  import {getDateAfterTwoWeeks, getTodayDate} from "./utils/dateHelper/dateHelper";
   import {required} from "vuelidate/lib/validators";
   import { helpers } from 'vuelidate/lib/validators'
   import ModalWindow from "./components/modalWindow/ModalWindow";
-  import {transliterate} from "../utils/translitToEnglish/translitToEnglish";
-  import {nameShortener} from "../utils/nameShortener/nameShortener";
-  import {countryTranslate} from "../utils/countryTranslate/countryTranslate";
+  import {transliterate} from "./utils/translitToEnglish/translitToEnglish";
+  import {nameShortener} from "./utils/nameShortener/nameShortener";
+  import {countryTranslate} from "./utils/countryTranslate/countryTranslate";
 
   //Regexp for fullName input (3 words, 2 chars min)
   const fullNameRegex = helpers.regex('fullNameRegex',
