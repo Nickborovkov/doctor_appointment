@@ -7,7 +7,7 @@
           <h3 style="text-align: center">Вызов врача на дом</h3>
           <hr class="mb-5">
 
-          <b-form @click.stop="">
+          <b-form>
 
             <p>Введите имя:</p>
             <b-form-input id="fullName"
@@ -20,22 +20,33 @@
               <p style="color: tomato" v-if="!$v.fullName.fullNameRegex && $v.fullName.$dirty">Введите полное ФИО, цифры недопустимы</p>
 
 
-            <p>Введите адрес:</p>
-            <b-form-input id="address"
-                          type="text"
-                          v-model="$v.address.$model"
-                          class="mb-3"
-                          @blur="$v.address.$touch()"
-                          @keydown="showAddressSuggestions(address)"
-                          @click="hintsActive = true"
-            ></b-form-input>
+              <p>Введите адрес:</p>
+              <b-form-input id="address"
+                            type="text"
+                            v-model="$v.address.$model"
+                            class="mb-3"
+                            @blur="$v.address.$touch()"
+                            @keydown="showAddressSuggestions(address)"
+                            @click.stop="hintsActive = true"
+              ></b-form-input>
               <p style="color: tomato" v-if="!$v.address.required && $v.address.$dirty">Поле обязательно</p>
 
 
+
               <div v-if="hintsActive" class="hintsHolder">
-                <p class="hintItem" :key="item.value" v-for="item in getAddressSuggestions"
-                   @click="chooseAddress(item.value)">
-                  {{item.value}}</p>
+
+                <div v-if="getIsLoading" style="display: flex; justify-content: center">
+                  <b-spinner variant="info"></b-spinner>
+                </div>
+
+                <div v-else-if="!getIsLoading && !getErorr">
+                  <p class="hintItem" :key="item.value" v-for="item in getAddressSuggestions"
+                     @click="chooseAddress(item.value)"
+                  >
+                    {{item.value}}
+                  </p>
+                </div>
+
               </div>
 
 
@@ -51,16 +62,26 @@
               <p style="color: tomato" v-if="!$v.appointmentDate.required && $v.appointmentDate.$dirty">Поле обязательно</p>
 
 
-            <b-button class="mt-3"
-                      style="width: 100%" variant="info"
-                      :disabled="!$v.fullName.fullNameRegex ||
+            <b-button-group style="display: flex; justify-content: center">
+              <b-button class="mt-3"
+                        variant="info"
+                        :disabled="!$v.fullName.fullNameRegex ||
                     !$v.fullName.required ||
                     !$v.address.required ||
                     !$v.appointmentDate.required"
-                      @click="$bvModal.show('responseModal')"
-            >
-              Записаться
-            </b-button>
+                        @click="setAppointment"
+              >
+                Записаться
+              </b-button>
+
+              <b-button class="mt-3"
+                        variant="danger"
+                        @click="clearForm"
+              >
+                Очистить
+              </b-button>
+            </b-button-group>
+
 
           </b-form>
 
@@ -71,6 +92,7 @@
     <ModalWindow :fullName="fullName"
                  :address="address"
                  :appointmentDate="appointmentDate"
+                 :clearForm="clearForm"
     ></ModalWindow>
 
   </b-container>
@@ -106,6 +128,12 @@ export default {
     },
     getAddressSuggestions () {
       return this.$store.getters.getAddressSuggestions
+    },
+    getIsLoading () {
+      return this.$store.getters.getIsLoading
+    },
+    getErorr () {
+      return this.$store.getters.getError
     }
   },
   validations: {
@@ -130,6 +158,15 @@ export default {
     chooseAddress (clickedHint) {
       this.address = clickedHint
       this.hintsActive = false
+    },
+    setAppointment () {
+      this.$bvModal.show('responseModal')
+    },
+    clearForm () {
+      this.fullName = ``
+      this.address = ``
+      this.appointmentDate = ``
+      this.$v.$reset()
     }
   }
 }
@@ -152,6 +189,6 @@ export default {
     padding: 3px;
   }
   .hintItem:hover{
-    background-color: #5bc0de;
+    background-color: #0dcaf0;
   }
 </style>

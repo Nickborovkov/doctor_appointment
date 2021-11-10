@@ -6,22 +6,48 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        addressSuggestions: null
+        addressSuggestions: null,
+        isLoading: false,
+        error: null,
     },
     mutations: {
         setAddressSuggestions (state, addressSuggestions) {
             state.addressSuggestions = addressSuggestions
+        },
+        setIsLoading (state, isLoading) {
+            state.isLoading = isLoading
+        },
+        setError (state, error) {
+            state.error = error
         }
     },
     actions: {
         async getAddressSuggestions ({commit}, query) {
-            const response = await dadataAPI.requestAddresses(query)
-            commit(`setAddressSuggestions`, response.data.suggestions)
+            try {
+                commit(`setError`, null)
+                commit(`setIsLoading`, true)
+                const response = await dadataAPI.requestAddresses(query)
+                if(response.data.suggestions.length > 0){
+                    commit(`setAddressSuggestions`, response.data.suggestions)
+                }else {
+                    commit(`setError`, `no results`)
+                }
+                commit(`setIsLoading`, false)
+            }catch (error) {
+                commit(`setError`, error.name)
+            }
+
         }
     },
     getters: {
         getAddressSuggestions (state) {
             return state.addressSuggestions
-        }
+        },
+        getIsLoading (state) {
+            return state.isLoading
+        },
+        getError (state) {
+            return state.error
+        },
     },
 })
