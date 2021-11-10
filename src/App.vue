@@ -1,5 +1,5 @@
 <template>
-  <b-container class="mt-5">
+  <b-container class="mt-5" @click="hintsActive = false">
     <b-row class="justify-content-center">
       <b-col xs="12" md="6">
         <b-card tag="div">
@@ -7,7 +7,7 @@
           <h3 style="text-align: center">Вызов врача на дом</h3>
           <hr class="mb-5">
 
-          <b-form>
+          <b-form @click.stop="">
 
             <p>Введите имя:</p>
             <b-form-input id="fullName"
@@ -26,8 +26,17 @@
                           v-model="$v.address.$model"
                           class="mb-3"
                           @blur="$v.address.$touch()"
+                          @keydown="showAddressSuggestions(address)"
+                          @click="hintsActive = true"
             ></b-form-input>
               <p style="color: tomato" v-if="!$v.address.required && $v.address.$dirty">Поле обязательно</p>
+
+
+              <div v-if="hintsActive" class="hintsHolder">
+                <p class="hintItem" :key="item.value" v-for="item in getAddressSuggestions"
+                   @click="chooseAddress(item.value)">
+                  {{item.value}}</p>
+              </div>
 
 
             <p>Выберите дату:</p>
@@ -40,6 +49,7 @@
                           @blur="$v.appointmentDate.$touch()"
             ></b-form-input>
               <p style="color: tomato" v-if="!$v.appointmentDate.required && $v.appointmentDate.$dirty">Поле обязательно</p>
+
 
             <b-button class="mt-3"
                       style="width: 100%" variant="info"
@@ -84,7 +94,7 @@ export default {
       address: ``,
       appointmentDate: ``,
       modalWindow: false,
-      formTouched: false,
+      hintsActive: false,
     }
   },
   computed: {
@@ -94,6 +104,9 @@ export default {
     dateAfterTwoWeeks () {
       return getDateAfterTwoWeeks()
     },
+    getAddressSuggestions () {
+      return this.$store.getters.getAddressSuggestions
+    }
   },
   validations: {
     fullName: {
@@ -109,6 +122,36 @@ export default {
   },
   components: {
     ModalWindow: ModalWindow,
+  },
+  methods: {
+    showAddressSuggestions (address) {
+      this.$store.dispatch(`getAddressSuggestions`, address)
+    },
+    chooseAddress (clickedHint) {
+      this.address = clickedHint
+      this.hintsActive = false
+    }
   }
 }
 </script>
+
+<style>
+  .hintsHolder{
+    position: absolute;
+    top: 286px;
+    left: 50%;
+    z-index: 1000;
+    background-color: #ffffff;
+    box-shadow: 1px 1px 1px #d4d4d4, -1px -1px 1px #d4d4d4;
+    border-radius: 5px;
+    width: 80%; transform: translateX(-50%)
+  }
+  .hintItem{
+    cursor: pointer;
+    margin: 0;
+    padding: 3px;
+  }
+  .hintItem:hover{
+    background-color: #5bc0de;
+  }
+</style>
