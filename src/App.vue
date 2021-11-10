@@ -239,7 +239,7 @@ export default {
 <style scoped>
   .hintsHolder{
     position: absolute;
-    top: 283px;
+    top: 304px;
     left: 50%;
     z-index: 1000;
     background-color: #ffffff;

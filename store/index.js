@@ -10,7 +10,6 @@ export default new Vuex.Store({
         currentSuggestion: null,
         isLoading: false,
         error: null,
-        resultInfo: null,
     },
     mutations: {
         setAddressSuggestions (state, addressSuggestions) {

@@ -1,3 +1,4 @@
+//This script returns today's date
 export const getTodayDate = () => {
     let now = new Date()
     let yearNow = String(now.getFullYear())
@@ -9,6 +10,7 @@ export const getTodayDate = () => {
     return `${yearNow}-${monthNow}-${dateNow}`
 }
 
+//This script returns date in two weeks
 export const getDateAfterTwoWeeks = () => {
     let now = new Date(Date.now() + 1209600000)
     let yearNow = String(now.getFullYear())
