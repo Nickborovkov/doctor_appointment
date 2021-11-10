@@ -7,19 +7,24 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         addressSuggestions: null,
+        currentSuggestion: null,
         isLoading: false,
         error: null,
+        resultInfo: null,
     },
     mutations: {
         setAddressSuggestions (state, addressSuggestions) {
             state.addressSuggestions = addressSuggestions
+        },
+        setCurrentSuggestion (state, currentSuggestion) {
+            state.currentSuggestion = currentSuggestion
         },
         setIsLoading (state, isLoading) {
             state.isLoading = isLoading
         },
         setError (state, error) {
             state.error = error
-        }
+        },
     },
     actions: {
         async getAddressSuggestions ({commit}, query) {
@@ -42,6 +47,9 @@ export default new Vuex.Store({
     getters: {
         getAddressSuggestions (state) {
             return state.addressSuggestions
+        },
+        getCurrentSuggestion (state) {
+            return state.currentSuggestion
         },
         getIsLoading (state) {
             return state.isLoading
