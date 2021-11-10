@@ -1,6 +1,6 @@
 # Doctor appointment app
 
-![image](https://github.com/Nickborovkov/doctor_appointment/blob/master/assets/appScreenshot.png)
+![image](https://github.com/Nickborovkov/doctor_appointment/blob/master/src/assets/appScreenshot.png)
 
 ## [See deployment](https://nickborovkov.github.io/doctor_appointment/)
 
